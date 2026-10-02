@@ -1,0 +1,202 @@
+:root {
+  color: #1c1917;
+  background: #f6f3ee;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  padding: 24px;
+  overflow: hidden;
+}
+
+.outline-panel {
+  background: #fffdf8;
+  border-right: 1px solid #e4dccf;
+  overflow: auto;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.muted {
+  color: #78716c;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 13px;
+}
+
+button {
+  border: 1px solid #d6d3d1;
+  background: white;
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.slides {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.slide {
+  border: 1px solid #e7e5e4;
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: white;
+}
+
+.slide-top {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.position {
+  font-family: "Segoe UI", sans-serif;
+  font-size: 12px;
+  color: #9a3412;
+}
+
+.slide p {
+  margin: 6px 0 0;
+}
+
+.chat-log {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 12px;
+}
+
+.bubble {
+  max-width: 90%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  white-space: pre-wrap;
+}
+
+.bubble.user {
+  align-self: flex-end;
+  background: #1c1917;
+  color: #fafaf9;
+}
+
+.bubble.assistant {
+  align-self: flex-start;
+  background: white;
+  border: 1px solid #e7e5e4;
+}
+
+.tool {
+  align-self: flex-start;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 13px;
+  color: #44403c;
+  background: #f5f5f4;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.composer {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  background: #f6f3ee;
+  border-top: 1px solid #e7e5e4;
+}
+
+.composer input {
+  flex: 1;
+  border: 1px solid #d6d3d1;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: white;
+}
+
+.prompts {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: 30vh;
+  margin-bottom: 12px;
+  overflow: auto;
+}
+
+.prompts button {
+  border-radius: 8px;
+  text-align: left;
+}
+
+.error {
+  color: #9f1239;
+}
+
+@media (max-width: 800px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 0.7fr) minmax(0, 1.3fr);
+  }
+
+  .outline-panel {
+    border-right: 0;
+    border-bottom: 1px solid #e4dccf;
+  }
+}

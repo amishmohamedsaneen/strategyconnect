@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "id": "d4",
+      "title": "Competitive positioning",
+      "description": "How we compare to alternatives."
+    },
+    {
+      "id": "3f02e0",
+      "title": "Market Strategy",
+      "description": "Strategise market on moon"
+    },
+    {
+      "id": "9cf66e",
+      "title": "Market Insights",
+      "description": "Key trends and insights in the market."
+    },
+    {
+      "id": "527444",
+      "title": "Market Analysis",
+      "description": "In-depth analysis of market trends and dynamics."
+    },
+    {
+      "id": "5e49b6",
+      "title": "Implementation Risks",
+      "description": ""
+    },
+    {
+      "id": "a005f8",
+      "title": "Market Verification",
+      "description": ""
+    },
+    {
+      "id": "e5",
+      "title": "Closing second last",
+      "description": "Tiers, discounts, terms."
+    },
+    {
+      "id": "a1",
+      "title": "Closing",
+      "description": "Set context and agenda."
+    }
+  ]
+}
