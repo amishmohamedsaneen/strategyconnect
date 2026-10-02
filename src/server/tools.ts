@@ -3,49 +3,19 @@ import { z } from "zod";
 import type { ChatModel } from "./config.js";
 import type { OutlineStore } from "./outline-store.js";
 
-function textFromContent(content: unknown): string {
-  if (typeof content === "string") return content;
-  if (!Array.isArray(content)) return "";
-  return content
-    .map((part) => {
-      if (typeof part === "string") return part;
-      if (part && typeof part === "object" && "text" in part) {
-        return String(part.text);
-      }
-      return "";
-    })
-    .join("");
-}
-
-function slidesFromModelText(text: string): { title: string; description: string }[] {
-  const cleaned = text.replace(/```json|```/g, "").trim();
-  const parsed: unknown = JSON.parse(cleaned);
-  const list = Array.isArray(parsed)
-    ? parsed
-    : parsed &&
-        typeof parsed === "object" &&
-        "items" in parsed &&
-        Array.isArray(parsed.items)
-      ? parsed.items
-      : null;
-  if (!list) {
-    throw new Error("The model did not return a list of slides.");
-  }
-
-  return list.map((entry) => {
-    if (!entry || typeof entry !== "object") {
-      throw new Error("A generated slide was not an object.");
-    }
-    const record = entry as Record<string, unknown>;
-    if (typeof record.title !== "string") {
-      throw new Error("A generated slide was missing a title.");
-    }
-    return {
-      title: record.title,
-      description: typeof record.description === "string" ? record.description : "",
-    };
-  });
-}
+const outlineDraftSchema = z.object({
+  items: z
+    .array(
+      z.object({
+        title: z.string().describe("Slide title taken from the topic and requirements."),
+        description: z
+          .string()
+          .describe("One short sentence taken from the topic and requirements."),
+      }),
+    )
+    .min(1)
+    .describe("Slides in outline order."),
+});
 
 function ok(data: unknown): string {
   return JSON.stringify({ ok: true, ...((data ?? {}) as object) });
@@ -80,22 +50,22 @@ export function createOutlineTools(store: OutlineStore, model: ChatModel) {
   );
 
   const createOutline = tool(
-    async ({ topic, itemCount }) => {
+    async ({ topic, requirements, itemCount }) => {
       try {
         const count = itemCount ?? 6;
-        const response = await model.invoke([
+        const structured = model.withStructuredOutput(outlineDraftSchema);
+        const draft = await structured.invoke([
           {
             role: "system",
             content:
-              "You write presentation outlines. Return only a JSON array. Each object has title and description. The description is one short sentence. No markdown.",
+              "Organize the topic and requirements into slides. Rephrase only. Do not add facts, numbers, dates, markets, or claims that were not supplied. Each description is one short sentence.",
           },
           {
             role: "user",
-            content: `Write ${count} slides about: ${topic}`,
+            content: `Write ${count} slides.\nTopic: ${topic}\nRequirements: ${requirements?.trim() || "None beyond the topic."}`,
           },
         ]);
-        const drafts = slidesFromModelText(textFromContent(response.content));
-        const items = await store.replace(drafts.slice(0, count));
+        const items = await store.replace(draft.items.slice(0, count));
         return ok({
           replaced: true,
           topic,
@@ -108,13 +78,21 @@ export function createOutlineTools(store: OutlineStore, model: ChatModel) {
     {
       name: "create_outline",
       description:
-        "Throw away the current outline and replace it with a newly written one about a topic. \
-        Use this only when the user clearly wants to start over or create a fresh outline. \
-        Do not use it to add or edit a single slide. \
-        topic is what the outline is about. \
-        itemCount is optional and defaults to 6.",
+        "Throw away the current outline and replace it with a newly written one. " +
+        "Use this only when the user clearly wants to start over or create a fresh outline. " +
+        "Do not use it to add or edit a single slide. " +
+        "Call it once. A successful call finishes the replacement. " +
+        "topic is what the outline is about. " +
+        "requirements is the user's constraints and requested content, copied through, not summarized away. " +
+        "itemCount is optional and defaults to 6.",
       schema: z.object({
         topic: z.string().describe("What the new outline is about."),
+        requirements: z
+          .string()
+          .optional()
+          .describe(
+            "The user's constraints and requested content, copied through. Do not drop details. Omit only when the user gave none beyond the topic.",
+          ),
         itemCount: z
           .number()
           .int()

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import type { Outline } from "../shared/outline";
-import { WALKTHROUGH_PROMPTS } from "./prompts";
 
 type Block =
   | { id: number; type: "user"; text: string }
