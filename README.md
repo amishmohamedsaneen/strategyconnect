@@ -2,6 +2,10 @@
 
 A slide outline on the left, a chat on the right. You type in plain English. The agent edits `outline.json`, and the outline updates while it works.
 
+## Walkthrough
+
+[Video walkthrough](https://drive.google.com/file/d/1pKcdlXejI3pvnYUAD6C4Usd-5vhWqfri/view?usp=drive_link)
+
 ## Run
 
 Node.js 20 or newer, and an OpenAI or Anthropic API key.
